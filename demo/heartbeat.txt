@@ -1,0 +1,5 @@
+ok
+This file is the demo endpoint of the first SLA on Bradbury:
+https://api.github.com/repos/brossXnft/genlayer-sla-escrow/contents/demo/heartbeat.txt
+answers 200 while the file exists. Deleting it makes the endpoint answer 404,
+which is how the demo simulates an outage that validators then confirm.
