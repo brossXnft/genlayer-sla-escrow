@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SLA Escrow</title>
+  <meta name="description" content="Uptime guarantees backed by GEN. GenLayer validators probe the endpoint from their own networks and pay the customer when they agree it is down.">
+  <link rel="stylesheet" href="web/style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <h1>SLA Escrow</h1>
+      <span class="tag">Uptime credits decided by independent validators</span>
+      <span class="spacer"></span>
+      <span class="net">GenLayer Bradbury · chain 4221</span>
+      <button id="connect" class="primary">Connect wallet</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h2>An uptime guarantee that pays out by itself.</h2>
+      <p>Today an SLA credit means filing a ticket and waiting for the provider to agree it was down, judged by a status page the provider writes. Here the provider bonds GEN in a GenLayer Intelligent Contract written in Rust. When the customer reports an outage, the leader and every validator probe the endpoint from their own network. The credit is paid only if they agree it is down.</p>
+    </section>
+
+    <div class="stats">
+      <div class="stat"><b id="s-count">–</b><span>SLAs</span></div>
+      <div class="stat"><b id="s-bonded">–</b><span>bonded by providers</span></div>
+      <div class="stat"><b id="s-credited">–</b><span>credited to customers</span></div>
+    </div>
+
+    <div id="activity"></div>
+
+    <section class="block">
+      <h2>Agreements</h2>
+      <div id="slas" class="grid"><p class="muted">Loading…</p></div>
+    </section>
+
+    <section class="block">
+      <h2>Offer an SLA (provider)</h2>
+      <div class="card">
+        <form id="create-form" class="stack">
+          <div class="row">
+            <label>Name<input id="f-name" required maxlength="60" placeholder="Acme RPC – premium plan"></label>
+            <label>Customer address<input id="f-customer" required placeholder="0x…" autocomplete="off"></label>
+          </div>
+          <div class="row">
+            <label>Endpoint URL (https)<input id="f-url" required placeholder="https://rpc.example.com"></label>
+            <label>Check
+              <select id="f-check">
+                <option value="http">HTTP: 2xx/3xx answer</option>
+                <option value="evm-rpc">EVM JSON-RPC: fresh head block</option>
+              </select>
+            </label>
+          </div>
+          <div class="row">
+            <label id="f-expect-wrap">Body must contain (optional)<input id="f-expect" maxlength="80" placeholder="ok"></label>
+            <label id="f-lag-wrap" hidden>Max head-block age (seconds)<input id="f-lag" type="number" min="30" max="86400" value="120"></label>
+            <label>Credit per outage (GEN)<input id="f-credit" required value="0.5" inputmode="decimal"></label>
+          </div>
+          <div class="row">
+            <label>Bond (GEN)<input id="f-bond" required value="2" inputmode="decimal"></label>
+            <label>Cooldown between credits (minutes)<input id="f-cooldown" type="number" min="10" max="10080" value="60" required></label>
+            <label>Term (days)<input id="f-days" type="number" min="1" max="365" value="30" required></label>
+          </div>
+          <p class="hint">Validators probe the endpoint when you create the SLA. It can only start on an endpoint that is up.</p>
+          <div class="actions"><button type="submit" class="primary">Bond and create</button></div>
+        </form>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>How it works</h2>
+      <div class="card">
+        <ol class="how">
+          <li><b>Bond.</b> The provider names the endpoint, the check, the customer and the credit per outage, and locks a bond. Validators confirm the endpoint is up before the SLA starts.</li>
+          <li><b>Report.</b> When the customer's monitoring sees an outage, the customer presses Report (or a bot sends the same call).</li>
+          <li><b>Probe.</b> The leader and each validator probe the endpoint themselves. An HTTP check is down on errors, timeouts or status ≥ 400; an EVM RPC check is also down when its head block is older than the limit.</li>
+          <li><b>Credit.</b> If they agree it is down, the credit goes to the customer from the bond. One credit per cooldown window.</li>
+          <li><b>End.</b> After the term, or when the customer releases early, the provider withdraws what is left of the bond.</li>
+        </ol>
+      </div>
+      <div class="trust" style="margin-top:12px">
+        <div class="card"><h3>No self-reported status</h3><p>The provider's status page plays no part. Each validator measures from its own network, so a regional blip seen by one node does not pay out.</p></div>
+        <div class="card"><h3>Benefit of the doubt</h3><p>If the endpoint flaps and validators disagree, the transaction does not reach consensus and nothing is paid. Only clear outages cost the provider.</p></div>
+        <div class="card"><h3>Money only moves by rule</h3><p>Credits go only to the customer, the remaining bond only to the provider, and each party triggers its own transfer.</p></div>
+        <div class="card"><h3>Check before you send</h3><p>“Check now” asks one node to run the probe without a transaction, so the customer sees the likely verdict before paying any fee.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <footer>
+    <div class="wrap">
+      <span>Contract <a id="contract-link" target="_blank" rel="noopener">…</a> (Rust, genlayer_sdk)</span>
+      <span><a id="repo-link" target="_blank" rel="noopener">Source code</a></span>
+      <span>Testnet only. Transfers need a small message-fee budget, attached automatically and mostly refunded.</span>
+    </div>
+  </footer>
+
+  <script type="module" src="web/app.js"></script>
+</body>
+</html>
