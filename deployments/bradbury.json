@@ -5,5 +5,25 @@
   "sha256": "3a62f6e8f852a93cf609642ed52dba2fa3bcaa82da0f72947e35be44b08ea55d",
   "size": 258843,
   "deploy_tx": "0x1e80b46021853ff7fdea9a62524cd94cf4f607c8fd0c6b4b7f115b8c2a65d262",
-  "evidence": []
+  "evidence": [
+    {
+      "what": "SLA #1 created on an HTTP endpoint (GitHub contents API for `demo/heartbeat.txt`); validators probed it up first",
+      "tx": "0xdc05ab94ee23eb03ddedbcb2ae3ee6981d2c7948372b39dfe815fcddca700966"
+    },
+    {
+      "what": "SLA #2 created on the GenLayer Chain RPC (`evm-rpc`, head block at most 120 s old)",
+      "tx": "0x3468bcae7ef5a84bbf0cf073964cd187380a3e690728472823d53faf7874b348"
+    },
+    {
+      "what": "Customer reports SLA #2: validators see the head block 2 s old, so it is up and nothing is paid",
+      "tx": "0xad6d1471c34da3e4d3efd0d9d7e53acf4754ac4f2129655c8358555afd2c47e3"
+    },
+    {
+      "what": "`demo/heartbeat.txt` deleted, endpoint answers 404; customer reports SLA #1: validators agree it is down, 0.2 GEN credit sent to the customer at finalization (contract balance 0.8 \u2192 0.6 GEN)",
+      "tx": "0x4da5f6d0ab1ec402c22185a9387b453c74ad56f7e0b6d6ce4fc3b64474e5c3ad"
+    }
+  ],
+  "notes": [
+    "Provider `0xaa2160917de3e87991fed9fe5a5b56c202dbf4b0`, customer `0x51f21e5c034b06824d95008582b78b948f6f812c` (both testnet wallets of the author)."
+  ]
 }

@@ -66,6 +66,17 @@ Run it locally with any static server: `python -m http.server` in the repository
 
 `tools/build.sh` rebuilds the same bytes (Rust 1.98.1, binaryen version_133) so the SHA-256 can be compared with the code the chain runs, for example with the verifier at https://brossxnft.github.io/genlayer-chunked-deploy/.
 
+Transactions that exercise the contract on Bradbury (all finalized with 5 validators unless noted):
+
+| What | GenLayer tx |
+|---|---|
+| SLA #1 created on an HTTP endpoint (GitHub contents API for `demo/heartbeat.txt`); validators probed it up first | [`0xdc05ab94ee23eb03…`](https://scan.bradbury.genlayer.com/tx/0xdc05ab94ee23eb03ddedbcb2ae3ee6981d2c7948372b39dfe815fcddca700966) |
+| SLA #2 created on the GenLayer Chain RPC (`evm-rpc`, head block at most 120 s old) | [`0x3468bcae7ef5a84b…`](https://scan.bradbury.genlayer.com/tx/0x3468bcae7ef5a84bbf0cf073964cd187380a3e690728472823d53faf7874b348) |
+| Customer reports SLA #2: validators see the head block 2 s old, so it is up and nothing is paid | [`0xad6d1471c34da3e4…`](https://scan.bradbury.genlayer.com/tx/0xad6d1471c34da3e4d3efd0d9d7e53acf4754ac4f2129655c8358555afd2c47e3) |
+| `demo/heartbeat.txt` deleted, endpoint answers 404; customer reports SLA #1: validators agree it is down, 0.2 GEN credit sent to the customer at finalization (contract balance 0.8 → 0.6 GEN) | [`0x4da5f6d0ab1ec402…`](https://scan.bradbury.genlayer.com/tx/0x4da5f6d0ab1ec402c22185a9387b453c74ad56f7e0b6d6ce4fc3b64474e5c3ad) |
+
+Provider `0xaa2160917de3e87991fed9fe5a5b56c202dbf4b0`, customer `0x51f21e5c034b06824d95008582b78b948f6f812c` (both testnet wallets of the author).
+
 ## Build and deploy
 
 ```bash
